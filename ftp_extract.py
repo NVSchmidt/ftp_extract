@@ -79,10 +79,10 @@ def doErrorLog(errorlog, incomplete):
 			file.write("\n".join(incomplete))
 		atexit.unregister(doErrorLog)
 		atexit.register(doErrorLog, False, [])
-		
-		
 	
 def doDownload(pathlist):
+	print(pathlist)
+	print(len(pathlist))
 	unzip = False
 	incomplete = pathlist
 	for item in pathlist:
@@ -92,10 +92,14 @@ def doDownload(pathlist):
 	outdir = easygui.diropenbox(title="Save FTP Files to Directory")
 	easygui.msgbox("Downloading of {} files will start when this message is dismissed. Progress can be monitored on the command prompt window. You must keep the command prompt window open to keep the program running.".format(len(pathlist)))
 	
+	i = 0
 	for line in pathlist:
-		saveas = outdir + "\\" + line[line.rfind("/")+1:]
-		if(line in saveas):
-			saveas = outdir + "\\" + line.replace("\\","")
+	
+		print(i)
+		i = i + 1
+		print(line)
+		
+		saveas = outdir + "\\" + line[line.rfind("/")+1:].replace("\\","") if "/" in line else outdir + "\\" + line.replace("\\","")
 		print("\n" + datetime.datetime.now().strftime("%Y-%m-%d at %H:%M") + "\nDownloading {}".format(line))
 		try:
 			urllib.urlretrieve(line, saveas)
@@ -115,7 +119,9 @@ def doDownload(pathlist):
 				print("Extracted {} to {}".format(saveas, outdir))
 		except IOError:
 			print("----------------------------------------------------------------------------------------\n\tCould not access {} at this time!\n----------------------------------------------------------------------------------------".format(line))
-		
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+			raise
 		
 	if(len(incomplete) == 0):
 		print("Downloaded All Files!")
