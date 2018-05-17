@@ -1,4 +1,4 @@
-import pandas, urllib, os, zipfile, sys, datetime
+import pandas, urllib, os, zipfile, sys, datetime, copy
 import easygui
 import atexit
 
@@ -81,10 +81,8 @@ def doErrorLog(errorlog, incomplete):
 		atexit.register(doErrorLog, False, [])
 	
 def doDownload(pathlist):
-	print(pathlist)
-	print(len(pathlist))
 	unzip = False
-	incomplete = pathlist
+	incomplete = copy.deepcopy(pathlist)
 	for item in pathlist:
 		if(item[item.rfind("."):] == ".zip"):
 			unzip = easygui.ynbox("We have detected at least one zipped file in this list. Would you like all zipped items to be unzipped?", "Unzip Files?")
@@ -92,13 +90,7 @@ def doDownload(pathlist):
 	outdir = easygui.diropenbox(title="Save FTP Files to Directory")
 	easygui.msgbox("Downloading of {} files will start when this message is dismissed. Progress can be monitored on the command prompt window. You must keep the command prompt window open to keep the program running.".format(len(pathlist)))
 	
-	i = 0
-	for line in pathlist:
-	
-		print(i)
-		i = i + 1
-		print(line)
-		
+	for line in pathlist: 
 		saveas = outdir + "\\" + line[line.rfind("/")+1:].replace("\\","") if "/" in line else outdir + "\\" + line.replace("\\","")
 		print("\n" + datetime.datetime.now().strftime("%Y-%m-%d at %H:%M") + "\nDownloading {}".format(line))
 		try:
